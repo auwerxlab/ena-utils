@@ -1,6 +1,6 @@
-==================================================================
+=================================================================================================
 A simple CLI toolbox to use the `European Nucleotide Archive (ENA) <https://www.ebi.ac.uk/ena/>`_
-==================================================================
+=================================================================================================
 
 .. image:: https://img.shields.io/badge/license-apache2-brightgreen.svg
    :target: https://github.com/auwerxlab/ena-utils/blob/master/LICENSE
