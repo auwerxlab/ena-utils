@@ -72,7 +72,7 @@ class ExperimentSet(object):
                     if k in kwargs.keys():
                         colnames[k] = kwargs[k]
                 self.experiment_list = []
-                for i, row in pd.read_table(experiment).iterrows():
+                for i, row in pd.read_table(experiment, dtype = 'str').iterrows():
                     # Retrieve the experiment details from table using columns names
                     args = {}
                     for key, value in colnames.items():

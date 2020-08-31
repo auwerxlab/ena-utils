@@ -69,7 +69,7 @@ class SampleSet(object):
                     if k in kwargs.keys():
                         colnames[k] = kwargs[k]
                 self.sample_list = []
-                for i, row in pd.read_table(sample).iterrows():
+                for i, row in pd.read_table(sample, dtype = 'str').iterrows():
                     # Retrieve the sample details from table using columns names
                     args = {}
                     for key, value in dict(row).items():

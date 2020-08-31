@@ -65,7 +65,7 @@ class RunSet(object):
                     if k in kwargs.keys():
                         colnames[k] = kwargs[k]
                 self.run_list = []
-                for i, row in pd.read_table(run).iterrows():
+                for i, row in pd.read_table(run, dtype = 'str').iterrows():
                     # Retrieve the run details from table using columns names
                     args = {}
                     for key, value in colnames.items():

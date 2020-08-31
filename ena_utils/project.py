@@ -50,7 +50,7 @@ class ProjectSet(object):
                     if k in kwargs.keys():
                         colnames[k] = kwargs[k]
                 self.project_list = []
-                for i, row in pd.read_table(project).iterrows():
+                for i, row in pd.read_table(project, dtype = 'str').iterrows():
                     # Retrieve the project details from table using columns names
                     args = {}
                     for key, value in colnames.items():
