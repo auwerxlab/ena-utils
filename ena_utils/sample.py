@@ -13,12 +13,12 @@ class Sample(object):
         """Create a sample."""
         self.dict = collections.OrderedDict({'SAMPLE':
         {
-            '@alias':alias,
-            'TITLE':title,
+            '@alias':str(alias),
+            'TITLE':str(title),
             'SAMPLE_NAME':{
-                'TAXON_ID':taxon_id,
-                'SCIENTIFIC_NAME':scientific_name,
-                'COMMON_NAME':common_name
+                'TAXON_ID':str(taxon_id),
+                'SCIENTIFIC_NAME':str(scientific_name),
+                'COMMON_NAME':str(common_name)
             },
             'SAMPLE_ATTRIBUTES':{}
         }})
@@ -26,8 +26,8 @@ class Sample(object):
         for key, value in kwargs.items():
             self.dict['SAMPLE']['SAMPLE_ATTRIBUTES'].update({
                'SAMPLE_ATTRIBUTE_unique_key_' + str(i):{
-                   'TAG':key,
-                   'VALUE':value
+                   'TAG':str(key),
+                   'VALUE':str(value)
                }
             })
             i = i+1

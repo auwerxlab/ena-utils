@@ -35,10 +35,10 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	rm -fr docs/_build/*
 	$(MAKE) -C docs html
 
-pypi-release: dist ## package and upload a release
+pypi-release: dist ## package and upload a release (use "VERSION=" to specify a version tag)
 	twine upload dist/*
 
-dist: clean ## builds source and wheel package
+dist: clean ## builds source and wheel package (use "VERSION=" to specify a version tag)
 	if [ $(VERSION) != '' ]; then \
 	sed -i "s/^release_version = .*/release_version = '$(VERSION)'/g" setup.py; \
 	fi
@@ -48,4 +48,7 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python3 setup.py install
+
+test: ## run the tests using pytest (requires ENA_UTILS_USER and ENA_UTILS_PASSWORD environment variables)
+	pytest test.py -s
 

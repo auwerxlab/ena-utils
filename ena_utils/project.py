@@ -11,9 +11,9 @@ class Project(object):
     def __init__(self, alias, title, description, **kwargs):
         """Create a project."""
         self.dict = collections.OrderedDict({'PROJECT':{
-            '@alias':alias,
-            'TITLE':title,
-            'DESCRIPTION':description,
+            '@alias':str(alias),
+            'TITLE':str(title),
+            'DESCRIPTION':str(description),
             'SUBMISSION_PROJECT':{'SEQUENCING_PROJECT':{}}
         }})
         self.xml = unparse(self.dict, pretty = True)

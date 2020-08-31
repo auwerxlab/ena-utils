@@ -12,8 +12,8 @@ class Run(object):
     def __init__(self, experiment, alias, center, filename, filetype, **kwargs):
         """Create a run."""
         self.dict = collections.OrderedDict({'RUN':{
-            '@alias':alias,
-            'EXPERIMENT_REF':{'@refname':experiment},
+            '@alias':str(alias),
+            'EXPERIMENT_REF':{'@refname':str(experiment)},
             'DATA_BLOCK':{
                 'FILES':{}
             }

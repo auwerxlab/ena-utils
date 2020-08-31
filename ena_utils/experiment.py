@@ -13,24 +13,24 @@ class Experiment(object):
         lib_protocol, instrument, **kwargs):
         """Create an experiment."""
         self.dict = collections.OrderedDict({'EXPERIMENT':{
-            '@alias':alias,
-            'TITLE':title,
-            'STUDY_REF':{'@accession':study},
+            '@alias':str(alias),
+            'TITLE':str(title),
+            'STUDY_REF':{'@accession':str(study)},
             'DESIGN':{
-                'DESIGN_DESCRIPTION':design,
-                'SAMPLE_DESCRIPTOR':{'@refname':sample},
+                'DESIGN_DESCRIPTION':str(design),
+                'SAMPLE_DESCRIPTOR':{'@refname':str(sample)},
                 'LIBRARY_DESCRIPTOR':{
-                    'LIBRARY_NAME':lib_name,
-                    'LIBRARY_STRATEGY':lib_strategy,
-                    'LIBRARY_SOURCE':lib_source,
-                    'LIBRARY_SELECTION':lib_selection,
-                    'LIBRARY_LAYOUT':{'PAIRED':{'@NOMINAL_LENGTH':lib_length}},
-                    'LIBRARY_CONSTRUCTION_PROTOCOL':lib_protocol
+                    'LIBRARY_NAME':str(lib_name),
+                    'LIBRARY_STRATEGY':str(lib_strategy),
+                    'LIBRARY_SOURCE':str(lib_source),
+                    'LIBRARY_SELECTION':str(lib_selection),
+                    'LIBRARY_LAYOUT':{'PAIRED':{'@NOMINAL_LENGTH':str(lib_length)}},
+                    'LIBRARY_CONSTRUCTION_PROTOCOL':str(lib_protocol)
                 }
             },
             'PLATFORM':{
                 'ILLUMINA':{
-                    'INSTRUMENT_MODEL':instrument
+                    'INSTRUMENT_MODEL':str(instrument)
                     }
             }
             }
