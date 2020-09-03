@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-release_version = '0.1.2'
+release_version = '0.1.3'
 
 setup(
     name = 'ena-utils',

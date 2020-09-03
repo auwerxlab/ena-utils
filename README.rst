@@ -18,10 +18,17 @@ A simple CLI toolbox to use the `European Nucleotide Archive (ENA) <https://www.
 
 **ena-utils** is a small python package that provides a CLI to submit nucleotides sequences to the `European Nucleotide Archive (ENA) <https://www.ebi.ac.uk/ena/>`_.
 
+The goals of this package are:
+
+1. To facilitate the submission of large numbers of objects
+2. To ease the exploitation of the ENA metadata schema to its full potential (see the **Future developments** section below)
+
+This is an early development version that provides only minimal features.
+
 Supported submission types
 ==========================
 
-- Reads
+- Non-multiplexed paired-end sequencing reads
 
 Features
 ========
@@ -72,3 +79,8 @@ Usage
 =====
 
 The latest documentation is available at `https://readthedocs.org <https://ena-utils.readthedocs.io/en/latest/>`_.
+
+Future developments
+===================
+
+- Auto-generation of the CLI and objects lists templates from the ENA schema XSD files.

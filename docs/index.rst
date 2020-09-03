@@ -21,7 +21,7 @@ A simple CLI toolbox to use the `European Nucleotide Archive (ENA) <https://www.
 Supported submission types
 ==========================
 
-- Reads
+- Non-multiplexed paired-end sequencing reads
 
 Features
 ========
@@ -55,3 +55,9 @@ Requirements
     :maxdepth: 5
 
     cli
+    
+.. toctree::
+    :caption: Supporting material
+    :maxdepth: 5
+
+    supporting_material
