@@ -28,7 +28,7 @@ A simple CLI toolbox to submit sequences to the European Nucleotide Archive (ENA
 @cli.command(help = 'Upload nucleotide sequences files.')
 @click.pass_context
 @click.option('-u', '--user',
-    help = 'Webin user ID (ex: "Webin-12345").',
+    help = 'Webin user ID (e.g. "Webin-12345").',
     prompt = 'Webin user ID',
     required = True)
 @click.option('-p', '--password',
@@ -37,7 +37,7 @@ A simple CLI toolbox to submit sequences to the European Nucleotide Archive (ENA
     hide_input = True,
     required = True)
 @click.option('-f', '--file_path',
-    help = 'Path to the sequence files - wildcards are supported - (ex: "data/exp01_*.fastq.gz").',
+    help = 'Path to the sequence files - wildcards are supported - (e.g. "data/exp01_*.fastq.gz").',
     required = True)
 @click.option('-h', '--host_address',
     help = 'FTP server address.',
@@ -57,7 +57,7 @@ def upload(ctx, **kwargs):
 
 @cli.group()
 @click.option('-u', '--user',
-    help = 'Webin user ID (ex: "Webin-12345").',
+    help = 'Webin user ID (e.g. "Webin-12345").',
     prompt = 'Webin user ID',
     required = True)
 @click.option('-p', '--password',
@@ -95,14 +95,16 @@ Submit studies, experiments, runs and samples. \
 @submit.command(help = 'Submit a single study.')
 @click.pass_context
 @click.option('-a', '--alias',
-    help = 'Study alias (ex: "my_new_great_study").',
+    help = 'Study alias (e.g. "my_new_great_study").',
     required = True)
 @click.option('-t', '--title',
-    help = 'Study title (ex: "A great study.").',
+    help = 'Study title (e.g. "A great study.").',
     required = True)
 @click.option('-d', '--description',
-    help = 'Study description (ex: "A longer study description.").',
+    help = 'Study description (e.g. "A longer study description.").',
     required = True)
+@click.option('--center',
+    help = 'Name of the main research institution hosting the study.')
 @click.option('--study_xml',
     help = 'Path to the XML project file that will be created.',
     default = 'project.xml',
@@ -129,7 +131,8 @@ def study(ctx, **kwargs):
     print(response.content.decode())
     return response
 
-@submit.command(help = 'Submit multiple studies using a tab-delimited table.')
+@submit.command(help = 'Submit multiple studies using a tab-delimited table. \
+The elements of the table must have the same format as the parameters used for a single study submission (see the "study" command above).')
 @click.pass_context
 @click.option('--table',
     help = 'Path to a tab-delimited text file containing a list of studies \
@@ -179,42 +182,42 @@ def study_set(ctx, **kwargs):
 @submit.command(help = 'Submit a single experiment.')
 @click.pass_context
 @click.option('--study',
-    help = 'Associated study accession number (ex: "PRJEB12345").',
+    help = 'Associated study accession number (e.g. "PRJEB12345").',
     required = True)
 @click.option('--sample',
-    help = 'Associated sample name (ex: "sample_01").',
+    help = 'Associated sample name (e.g. "sample_01").',
     required = True)
 @click.option('-a', '--alias',
-    help = 'Experiment alias (ex: "my_experiment_01").',
+    help = 'Experiment alias (e.g. "my_experiment_01").',
     required = True)
 @click.option('-c', '--center',
-    help = 'Center name.',
+    help = 'Name of the sequencing center (can be different from the study host institution).',
     required = True)
 @click.option('-t', '--title',
-    help = 'Experiment title (ex: "A great experiment").',
+    help = 'Experiment title (e.g. "A great experiment").',
     required = True)
 @click.option('-d', '--design',
-    help = 'Experiment design (ex: "Targeted sequencing of gene X with primers A/B.").',
+    help = 'Experiment design (e.g. "Targeted sequencing of gene X with primers A/B.").',
     required = True)
 @click.option('--lib_name',
-    help = 'Library name (ex: "LIB_01").')
+    help = 'Library name (e.g. "LIB_01").')
 @click.option('--lib_strategy',
-    help = 'Library strategy (ex: "AMPLICON").',
+    help = 'Library strategy (e.g. "AMPLICON").',
     required = True)
 @click.option('--lib_source',
-    help = 'Library source (ex: "METAGENOMIC").',
+    help = 'Library source (e.g. "METAGENOMIC").',
     required = True)
 @click.option('--lib_selection',
-    help = 'Library selection (ex: "PCR").',
+    help = 'Library selection (e.g. "PCR").',
     required = True)
 @click.option('--lib_length',
-    help = 'Library nominal length (ex: "311").',
+    help = 'Library nominal length (e.g. "311").',
     required = True)
 @click.option('--lib_protocol',
-    help = 'Library construction protocol (ex: "As described previously in XY et al.").',
+    help = 'Library construction protocol (e.g. "As described previously in XY et al.").',
     required = True)
 @click.option('--instrument',
-    help = 'Instrument model (ex: "Illumina MiSeq").',
+    help = 'Instrument model (e.g. "Illumina MiSeq").',
     required = True)
 @click.option('--experiment_xml',
     help = 'Path to the XML experiment file that will be created.',
@@ -242,7 +245,8 @@ def experiment(ctx, **kwargs):
     print(response.content.decode())
     return response
 
-@submit.command(help = 'Submit multiple experiments using a tab-delimited table.')
+@submit.command(help = 'Submit multiple experiments using a tab-delimited table. \
+The elements of the table must have the same format as the parameters used for a single experiment submission (see the "experiment" command above).')
 @click.pass_context
 @click.option('--table',
     help = 'Path to a tab-delimited text file containing a list of experiments \
@@ -331,23 +335,31 @@ def experiment_set(ctx, **kwargs):
     print(response.content.decode())
     return response
 
-@submit.command(help = 'Submit a single run.')
+@submit.command(help = 'Submit a single run. \
+A md5 checksum of the run file must be provided for the submission. \
+If a valid path to the file is provided with the --filename option, this is automatically calculated by ena-utils. \
+However, if the path is not valid or the files are not accessible on your file system, \
+the md5 checksum must be provided using either the --checksum option.')
 @click.pass_context
 @click.option('-e', '--experiment',
-    help = 'Experiment reference (ex: "my_experiment_01").',
+    help = 'Experiment reference (e.g. "my_experiment_01").',
     required = True)
 @click.option('-a', '--alias',
-    help = 'Run alias (ex: "my_run_01.").',
+    help = 'Run alias (e.g. "my_run_01.").',
     required = True)
 @click.option('-c', '--center',
-    help = 'Center name.',
+    help = 'Name of the sequencing center.',
     required = True)
 @click.option('--filename',
-    help = 'Comma-delimited paths to the sequence files (ex: "data/exp01_01_R1.fastq.gz,data/exp01_01_R2.fastq.gz").',
+    help = 'Comma-delimited paths to the sequence files, absolute or relative to your working directory (e.g. "data/exp01_01_R1.fastq.gz,data/exp01_01_R2.fastq.gz"). \
+    If the sequence files are not on your file system: 1) Checksums for these files must be provided with the --checksum option. \
+    2) File names still need to be provided here. 3) If a path is provided, only the file name (basename) will be used.',
     required = True)
 @click.option('--filetype',
-    help = 'Comma-delimited type descriptions for the sequence files (ex: "fastq,fastq").',
+    help = 'Comma-delimited type descriptions for the sequence files (e.g. "fastq,fastq").',
     required = True)
+@click.option('--checksum',
+    help = 'Comma-delimited md5 checksums for the sequence files (e.g. "51e00fbf45a12acd4cd4e65zgac54321,214f0fbf45a12acd4cd4e65zgac12345").')
 @click.option('--run_xml',
     help = 'Path to the XML run file that will be created.',
     default = 'run.xml',
@@ -374,13 +386,14 @@ def run(ctx, **kwargs):
     print(response.content.decode())
     return response
 
-@submit.command(help = 'Submit multiple runs using a tab-delimited table.')
+@submit.command(help = 'Submit multiple runs using a tab-delimited table. \
+The elements of the table must have the same format as the parameters used for a single run submission (see the "run" command above).')
 @click.pass_context
 @click.option('--table',
     help = 'Path to a tab-delimited text file containing a list of runs to submit and their parameters. \
-The file must contain one row per run and the first row must contain columns headers for alias, center, \
-and files. \
-The command options must be replaced by their corresponding parameters file headers. \
+The file must contain one row per run and the first row must contain columns headers for alias, sequencing center, \
+files names and files types. Optionally, an additional column for md5 checksums can be provided \
+(usefull when the files are not on your system and the checksum cannot be calculated by ena-utils). \
 Using a parameters files allows to submit multiple runs at one time.')
 @click.option('-e', '--experiment',
     help = 'Name of the table column containing references to associated experiments.',
@@ -391,7 +404,7 @@ Using a parameters files allows to submit multiple runs at one time.')
     default = 'alias',
     show_default = True)
 @click.option('-c', '--center',
-    help = 'Name of the table column containing center names.',
+    help = 'Name of the table column containing the name of the sequencing center.',
     default = 'center',
     show_default = True)
 @click.option('--filename',
@@ -402,6 +415,8 @@ Using a parameters files allows to submit multiple runs at one time.')
     help = 'Name of the table column containing comma-delimited type description for the associated sequence files.',
     default = 'filetype',
     show_default = True)
+@click.option('--checksum',
+    help = 'Name of the table column containing comma-delimited md5 checksums for the sequence files.')
 @click.option('--run_xml',
     help = 'Path to the XML run file that will be created.',
     default = 'run.xml',
@@ -433,22 +448,22 @@ def run_set(ctx, **kwargs):
 @submit.command(help = 'Submit a single sample.')
 @click.pass_context
 @click.option('-a', '--alias',
-    help = 'Sample alias (ex: "sample_01").',
+    help = 'Sample alias (e.g. "sample_01").',
     required = True)
 @click.option('--title',
-    help = 'Sample title (ex: "My great sample 01.").',
+    help = 'Sample title (e.g. "My great sample 01.").',
     required = True)
 @click.option('--taxon_id',
-    help = 'Sample taxon ID attribute (ex: "10090").',
+    help = 'Sample taxon ID attribute (e.g. "10090").',
     required = True)
 @click.option('--scientific_name',
-    help = 'Sample scientific name attribute (ex: "Mus musculus").',
+    help = 'Sample scientific name attribute (e.g. "Mus musculus").',
     required = True)
 @click.option('--common_name',
-    help = 'Sample common name attribute (ex: "house mouse").',
+    help = 'Sample common name attribute (e.g. "house mouse").',
     required = True)
 @click.option('--attributes',
-    help = 'JSON-formatted string of sample attributes key:value pairs (ex: {"age":"2 weeks","strain":"C57BL/6"}).')
+    help = 'JSON-formatted string of sample attributes key:value pairs (e.g. {"age":"2 weeks","strain":"C57BL/6"}).')
 @click.option('--sample_xml',
     help = 'Path to the XML sample file that will be created.',
     default = 'sample.xml',
@@ -480,14 +495,15 @@ def sample(ctx, **kwargs):
     print(response.content.decode())
     return response
 
-@submit.command(help = 'Submit multiple samples using a tab-delimited table.')
+@submit.command(help = 'Submit multiple samples using a tab-delimited table. \
+The elements of the table must have the same format as the parameters used for a single sample submission (see the "sample" command above).')
 @click.pass_context
 @click.option('--table',
     help = 'Path to a tab-delimited text file containing a list of samples to submit and their parameters. \
 The file must contain one row per sample and the first row must contain columns headers for at least alias, title, \
 taxon ID, scientific name and common name. Additional columns are submitted as additional sample attributes. \
 Taxon ID, scientific name and common name must comply with ENA standard organism taxonomic description \
-(ex: for Mus musculus, taxon ID is "10090", scientific name is "Mus musculus" and common name is "house mouse")',
+(e.g. for Mus musculus, taxon ID is "10090", scientific name is "Mus musculus" and common name is "house mouse")',
     required = True)
 @click.option('-a', '--alias',
     help = 'Name of the table column containing sample alias.',

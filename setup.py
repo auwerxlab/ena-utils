@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-release_version = '0.1.3'
+release_version = '0.2.1'
 
 setup(
     name = 'ena-utils',
@@ -19,6 +19,7 @@ setup(
         'pandas>=1.1.0',
         'xmltodict>=0.12.0',
     ],
+    setup_requires = ['wheel'],
     entry_points = {
         'console_scripts': [
             'ena-utils = ena_utils.__main__:cli'
