@@ -6,16 +6,32 @@ from xmltodict import unparse
 from re import sub
 
 class Project(object):
-    """A project."""
+    """
+    A Study is a container for a sequencing investigation that may comprise multiple experiments.
+    The Study has an overall goal, but is otherwise minimally defined in the SRA. 
+    A Study is composed of a descriptor, zero or more experiments, and zero or more analyses.
+    The submitter may decorate the Study with web links and properties.
+    """
 
-    def __init__(self, alias, title, description, **kwargs):
-        """Create a project."""
+    def __init__(self,
+        alias,
+        title,
+        description,
+        **kwargs):
+
+        """Create a study."""
+        # Ex. https://ftp.ncbi.nlm.nih.gov/sra/examples/
+        # 1. create a dict from the schema.
+        # 2. update the dict with arguments values by crawling the dict and kwargs (not manually)- how to manage "@"?
+        # 3. Add additional arguments to the attributes list with a loop
         self.dict = collections.OrderedDict({'PROJECT':{
-            '@alias':str(alias),
-            'TITLE':str(title),
-            'DESCRIPTION':str(description),
+            '@alias':alias,
+            '@center_name':kwargs['center'] if 'center' in kwargs.keys() else '',
+            'TITLE':title,
+            'DESCRIPTION':description,
             'SUBMISSION_PROJECT':{'SEQUENCING_PROJECT':{}}
         }})
+
         self.xml = unparse(self.dict, pretty = True)
 
 class ProjectSet(object):
@@ -53,8 +69,11 @@ class ProjectSet(object):
                 for i, row in pd.read_table(project, dtype = 'str').iterrows():
                     # Retrieve the project details from table using columns names
                     args = {}
-                    for key, value in colnames.items():
-                        args[key] = dict(row)[value]
+                    for key, value in dict(row).items():
+                        if key in colnames.values():
+                            args[key] = value
+                        else:
+                            args[key] = value
                     self.project_list.append(Project(**args))
             except Exception as e:
                 print('Error: ' + str(e))

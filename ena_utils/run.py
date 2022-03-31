@@ -9,7 +9,7 @@ from re import sub
 class Run(object):
     """A run."""
 
-    def __init__(self, experiment, alias, center, filename, filetype, **kwargs):
+    def __init__(self, experiment, alias, filename, filetype, **kwargs):
         """Create a run."""
         self.dict = collections.OrderedDict({'RUN':{
             '@alias':str(alias),
@@ -19,8 +19,14 @@ class Run(object):
             }
         }})
         for i, fn in enumerate(filename.split(',')):
-            with open(fn, 'rb') as f:
-                checksum = hashlib.md5(f.read()).hexdigest()
+            """If no md5 checksum is provided and if the file exists, calculate its md5 checksum"""
+            if 'checksum' in kwargs.keys():
+                checksum = kwargs['checksum'].split(',')[i]
+            elif os.path.exists(fn):
+                with open(fn, 'rb') as f:
+                    checksum = hashlib.md5(f.read()).hexdigest()
+            else:
+                raise ValueError('md5 checksum cannot be determined because file does not exist. Please provide the md5 checksum or ensure that file is accessible')
             self.dict['RUN']['DATA_BLOCK']['FILES'].update(
                 {'FILE_unique_key_' + str(i):{
                     '@filename':os.path.basename(fn),
@@ -68,8 +74,11 @@ class RunSet(object):
                 for i, row in pd.read_table(run, dtype = 'str').iterrows():
                     # Retrieve the run details from table using columns names
                     args = {}
-                    for key, value in colnames.items():
-                        args[key] = dict(row)[value]
+                    for key, value in dict(row).items():
+                        if key in colnames.values():
+                            args[key] = value
+                        else:
+                            args[key] = value
                     self.run_list.append(Run(**args))
             except Exception as e:
                 print('Error: ' + str(e))
